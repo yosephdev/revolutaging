@@ -23,7 +23,7 @@ A compassionate AI companion application designed specifically for seniors, feat
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/yosephdev/revolutaging.git
 cd revolutaging
 
 # Install dependencies

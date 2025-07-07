@@ -1,2 +1,13 @@
+import React from 'react';
 
-// This file is no longer needed, as the TypingIndicator component has been moved to the components directory.
+const TypingIndicator = () => {
+  return (
+    <div className="flex items-center space-x-2">
+      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-150"></div>
+      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-300"></div>
+    </div>
+  );
+};
+
+export default TypingIndicator;

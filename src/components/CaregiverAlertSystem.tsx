@@ -6,12 +6,12 @@ import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, Clock, Heart, Activity, Phone, Mail, MessageSquare, Filter, X, CheckCircle, Bell } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { alertsAPI, CaregiverAlert } from '@/services/api';
-import { useIsMobile } from '@/hooks/use-mobile';
+
 
 const CaregiverAlertSystem = () => {
   const [selectedPriority, setSelectedPriority] = useState<string | null>(null);
   const [showResolved, setShowResolved] = useState(false);
-  const isMobile = useIsMobile();
+ 
 
   const { data: alerts = [], isLoading } = useQuery({
     queryKey: ['caregiverAlerts'],
@@ -84,7 +84,7 @@ const CaregiverAlertSystem = () => {
                     key={priority}
                     onClick={() => setSelectedPriority(selectedPriority === priority ? null : priority)}
                     variant={selectedPriority === priority ? 'default' : 'outline'}
-                    size={isMobile ? "sm" : "default"}
+                    
                     className="capitalize text-xs sm:text-sm"
                   >
                     {priorityIcons[priority as keyof typeof priorityIcons]}
@@ -101,7 +101,7 @@ const CaregiverAlertSystem = () => {
               <Button
                 onClick={() => setShowResolved(!showResolved)}
                 variant={showResolved ? 'default' : 'outline'}
-                size={isMobile ? "sm" : "default"}
+            
                 className="text-xs sm:text-sm"
               >
                 {showResolved ? <CheckCircle className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> : null}
@@ -208,7 +208,7 @@ const CaregiverAlertSystem = () => {
                 {!alert.resolved && (
                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <Button 
-                      size={isMobile ? "sm" : "default"}
+                     
                       className="bg-blue-500 hover:bg-blue-600 text-xs sm:text-sm flex-1 sm:flex-none"
                     >
                       <Phone className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
@@ -216,7 +216,7 @@ const CaregiverAlertSystem = () => {
                     </Button>
                     <Button 
                       variant="outline" 
-                      size={isMobile ? "sm" : "default"}
+                     
                       className="text-xs sm:text-sm flex-1 sm:flex-none"
                     >
                       <Mail className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
@@ -224,7 +224,7 @@ const CaregiverAlertSystem = () => {
                     </Button>
                     <Button 
                       variant="outline" 
-                      size={isMobile ? "sm" : "default"}
+                      
                       className="text-xs sm:text-sm flex-1 sm:flex-none"
                     >
                       <MessageSquare className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />

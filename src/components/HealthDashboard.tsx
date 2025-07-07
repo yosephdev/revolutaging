@@ -6,10 +6,12 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { useQuery } from '@tanstack/react-query';
 import { healthAPI } from '@/services/api';
-import { useIsMobile } from '@/hooks/use-mobile';
+import useIsMobile from '@/hooks/useIsMobile';
+
 
 const HealthDashboard = () => {
   const isMobile = useIsMobile();
+
   
   // Fetch health data from API service
   const { data: healthMetrics, isLoading } = useQuery({

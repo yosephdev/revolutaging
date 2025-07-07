@@ -3,9 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Heart, Send, Clock } from 'lucide-react';
-import WarmSurprises from './WarmSurprises';
+
 import ChatMessage from './ChatMessage';
 import TypingIndicator from './TypingIndicator';
+import WarmSurprises from './WarmSurprises';
+
 import ExamplePrompts from './ExamplePrompts';
 
 interface Message {
@@ -286,8 +288,7 @@ const AICompanion = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
-          {/* Warm Surprises */}
-          <WarmSurprises onSurpriseSelect={handleSurpriseSelect} />
+          
 
           {/* Example Prompts */}
           {showExamplePrompts && messages.length <= 1 && (
@@ -300,9 +301,8 @@ const AICompanion = () => {
           <div className="min-h-96 max-h-96 overflow-y-auto mb-6 bg-gray-50 rounded-xl p-6">
             {messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
-            ))}
-            
-            {isTyping && <TypingIndicator />}
+            ))}            
+           
             <div ref={messagesEndRef} />
           </div>
 

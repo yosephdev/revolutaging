@@ -2,21 +2,24 @@
 import React, { useState } from 'react';
 import { Heart, MessageCircle, Activity, Users, Mic, MicOff, AlertTriangle, Menu, Pill } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { toast } from '@/hooks/use-toast';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useToast } from '@/components/ui/use-toast';
+import useIsMobile from '@/hooks/useIsMobile';
+import useVoiceCommands from '@/hooks/useVoiceCommands';
+
+
 import AICompanion from '@/components/AICompanion';
 import HealthDashboard from '@/components/HealthDashboard';
 import CaregiverConnection from '@/components/CaregiverConnection';
 import CaregiverAlertSystem from '@/components/CaregiverAlertSystem';
 import VoiceCommands from '@/components/VoiceCommands';
-import { useVoiceCommands } from '@/hooks/useVoiceCommands';
+
 import MedicationPage from './MedicationPage';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('companion');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { toast } = useToast();
 
   const voiceConfig = {
     onStartChat: () => {

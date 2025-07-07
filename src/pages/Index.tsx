@@ -145,7 +145,7 @@ const Index = () => {
             {navigationItems.map(({ key, icon: Icon, label }) => (
               <Button
                 key={key}
-                onClick={() => handleTabchange(key)}
+                onClick={() => handleTabChange(key)}
                 variant={activeTab === key ? 'default' : 'outline'}
                 className="p-3 sm:p-4 text-xs sm:text-sm rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex flex-col items-center space-y-1 h-auto min-h-[4rem] sm:min-h-[5rem]"
               >

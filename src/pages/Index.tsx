@@ -15,11 +15,16 @@ import VoiceCommands from '@/components/VoiceCommands';
 
 import MedicationPage from './MedicationPage';
 
+import { useAuth } from '@/hooks/useAuth';
+import { getAuth, signOut } from 'firebase/auth';
+
 const Index = () => {
   const [activeTab, setActiveTab] = useState('companion');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
   const { toast } = useToast();
+  const { user } = useAuth();
+  const auth = getAuth();
 
   const voiceConfig = {
     onStartChat: () => {
@@ -117,6 +122,13 @@ const Index = () => {
               >
                 <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
+              {user ? (
+                <Button onClick={() => signOut(auth)}>Sign Out</Button>
+              ) : (
+                <Button as="a" href="/login">
+                  Login
+                </Button>
+              )}
             </div>
           </div>
         </div>

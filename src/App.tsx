@@ -32,14 +32,8 @@ const App = () => {
             </div>
           )}
           <Routes>
-            <Route
-              path="/"
-              element={user ? <Index /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="/login"
-              element={!user ? <LoginPage /> : <Navigate to="/" />}
-            />
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<LoginPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -1,3 +1,1 @@
-import { useToast, toast } from "@/hooks/use-toast";
-
-export { useToast, toast };
+// This file is no longer needed, as the use-toast hook has been moved to the hooks directory.

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Activity, Users, Mic, MicOff, AlertTriangle, Menu } from 'lucide-react';
+import { Heart, MessageCircle, Activity, Users, Mic, MicOff, AlertTriangle, Menu, Pill } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
@@ -11,6 +11,7 @@ import CaregiverConnection from '@/components/CaregiverConnection';
 import CaregiverAlertSystem from '@/components/CaregiverAlertSystem';
 import VoiceCommands from '@/components/VoiceCommands';
 import { useVoiceCommands } from '@/hooks/useVoiceCommands';
+import MedicationPage from './MedicationPage';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('companion');
@@ -55,7 +56,8 @@ const Index = () => {
       companion: 'AI companion',
       health: 'health summary',
       caregivers: 'family and caregivers',
-      alerts: 'care alerts'
+      alerts: 'care alerts',
+      medication: 'medication tracker'
     };
     speak(`Switched to ${tabNames[tab as keyof typeof tabNames]}`);
   };
@@ -63,6 +65,7 @@ const Index = () => {
   const navigationItems = [
     { key: 'companion', icon: MessageCircle, label: 'Chat with AI Friend' },
     { key: 'health', icon: Activity, label: 'Health Summary' },
+    { key: 'medication', icon: Pill, label: 'Medication Tracker' },
     { key: 'caregivers', icon: Users, label: 'Family & Caregivers' },
     { key: 'alerts', icon: AlertTriangle, label: 'Care Alerts' }
   ];
@@ -142,7 +145,7 @@ const Index = () => {
             {navigationItems.map(({ key, icon: Icon, label }) => (
               <Button
                 key={key}
-                onClick={() => handleTabChange(key)}
+                onClick={() => handleTabchange(key)}
                 variant={activeTab === key ? 'default' : 'outline'}
                 className="p-3 sm:p-4 text-xs sm:text-sm rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex flex-col items-center space-y-1 h-auto min-h-[4rem] sm:min-h-[5rem]"
               >
@@ -190,6 +193,7 @@ const Index = () => {
           {activeTab === 'health' && <HealthDashboard />}
           {activeTab === 'caregivers' && <CaregiverConnection />}
           {activeTab === 'alerts' && <CaregiverAlertSystem />}
+          {activeTab === 'medication' && <MedicationPage />}
         </div>
       </main>
 

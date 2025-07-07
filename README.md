@@ -3,6 +3,10 @@
 
 A compassionate AI companion application designed specifically for seniors, featuring empathetic chat, health monitoring, caregiver alerts, and voice-first accessibility.
 
+[Try RevolutAging Live](https://yosephdev.github.io/revolutaging/) | [View Demo](#features)
+
+![RevolutAging App Preview](public/revolutaging-preview.png)
+
 ## 🌟 Features
 
 - **🧠 Empathetic AI Companion**: Natural conversation with memory and emotional intelligence

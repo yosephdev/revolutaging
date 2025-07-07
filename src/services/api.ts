@@ -1,6 +1,24 @@
 
-// Mock API service for backend integration
-// Replace these with real API endpoints when backend is ready
+import { db, auth } from '@/lib/firebase';
+import {
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  addDoc,
+  updateDoc,
+  query,
+  where,
+  getDocs,
+  serverTimestamp,
+} from 'firebase/firestore';
+
+// Helper to get current user ID
+const getCurrentUserId = () => {
+  const user = auth.currentUser;
+  if (!user) throw new Error('User not authenticated');
+  return user.uid;
+};
 
 export interface HealthMetrics {
   sleepHours: number;
@@ -39,124 +57,72 @@ export interface ChatMessage {
   topic?: string;
 }
 
-// Enhanced mock data for better dashboard visualization
-const mockHealthData: HealthMetrics = {
-  sleepHours: 7.8,
-  steps: 4250,
-  moodRating: 8,
-  heartRate: 72,
-  bloodPressure: {
-    systolic: 120,
-    diastolic: 80
-  },
-  lastUpdated: new Date().toISOString(),
-  weeklySteps: [3800, 4200, 3600, 4500, 4800, 5200, 4250],
-  weeklySleep: [7.2, 8.1, 6.8, 7.9, 8.2, 8.5, 7.8],
-  weeklyMood: [7, 8, 6, 9, 8, 9, 8],
-  stepsGoal: 5000,
-  sleepGoal: 8
-};
-
-const mockAlerts: CaregiverAlert[] = [
-  {
-    id: '1',
-    type: 'activity',
-    severity: 'medium',
-    title: 'Low Activity Today',
-    description: 'Only 500 steps recorded by 2 PM',
-    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    resolved: false
-  },
-  {
-    id: '2',
-    type: 'medication',
-    severity: 'high',
-    title: 'Medication Reminder',
-    description: 'Blood pressure medication due at 6 PM',
-    timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-    resolved: false
-  },
-  {
-    id: '3',
-    type: 'health',
-    severity: 'low',
-    title: 'Sleep Pattern Change',
-    description: 'Bedtime was 1 hour later than usual last night',
-    timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-    resolved: false
-  }
-];
-
-// API functions - replace URLs with real backend endpoints
+// API functions using Firebase
 export const healthAPI = {
-  // GET /api/health/metrics
   getHealthMetrics: async (): Promise<HealthMetrics> => {
-    console.log('API Call: GET /api/health/metrics (mock)');
-    return new Promise(resolve => 
-      setTimeout(() => resolve(mockHealthData), 500)
-    );
+    const userId = getCurrentUserId();
+    const docRef = doc(db, 'users', userId, 'health', 'metrics');
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data() as HealthMetrics;
+    } else {
+      // Return default/empty state if no data
+      return {
+        sleepHours: 0,
+        steps: 0,
+        moodRating: 5,
+        heartRate: 0,
+        bloodPressure: { systolic: 0, diastolic: 0 },
+        lastUpdated: new Date().toISOString(),
+        weeklySteps: [],
+        weeklySleep: [],
+        weeklyMood: [],
+        stepsGoal: 5000,
+        sleepGoal: 8,
+      };
+    }
   },
 
-  // POST /api/health/metrics
   updateHealthMetrics: async (metrics: Partial<HealthMetrics>): Promise<HealthMetrics> => {
-    console.log('API Call: POST /api/health/metrics (mock)', metrics);
-    return new Promise(resolve => 
-      setTimeout(() => resolve({ ...mockHealthData, ...metrics }), 500)
-    );
+    const userId = getCurrentUserId();
+    const docRef = doc(db, 'users', userId, 'health', 'metrics');
+    await setDoc(docRef, { ...metrics, lastUpdated: serverTimestamp() }, { merge: true });
+    return healthAPI.getHealthMetrics();
   },
-
-  // GET /api/health/trends
-  getHealthTrends: async (period: 'week' | 'month'): Promise<any> => {
-    console.log('API Call: GET /api/health/trends (mock)', { period });
-    return new Promise(resolve => 
-      setTimeout(() => resolve({
-        steps: mockHealthData.weeklySteps,
-        sleep: mockHealthData.weeklySleep,
-        mood: mockHealthData.weeklyMood
-      }), 500)
-    );
-  }
 };
 
 export const alertsAPI = {
-  // GET /api/alerts
   getAlerts: async (): Promise<CaregiverAlert[]> => {
-    console.log('API Call: GET /api/alerts (mock)');
-    return new Promise(resolve => 
-      setTimeout(() => resolve(mockAlerts), 500)
-    );
+    const userId = getCurrentUserId();
+    const q = query(collection(db, 'users', userId, 'alerts'), where('resolved', '==', false));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as CaregiverAlert));
   },
 
-  // PUT /api/alerts/:id/resolve
-  resolveAlert: async (alertId: string): Promise<CaregiverAlert> => {
-    console.log('API Call: PUT /api/alerts/' + alertId + '/resolve (mock)');
-    const alert = mockAlerts.find(a => a.id === alertId);
-    if (alert) alert.resolved = true;
-    return new Promise(resolve => 
-      setTimeout(() => resolve(alert!), 500)
-    );
+  resolveAlert: async (alertId: string): Promise<void> => {
+    const userId = getCurrentUserId();
+    const alertRef = doc(db, 'users', userId, 'alerts', alertId);
+    await updateDoc(alertRef, { resolved: true });
   },
 
-  // POST /api/alerts
-  createAlert: async (alert: Omit<CaregiverAlert, 'id' | 'timestamp'>): Promise<CaregiverAlert> => {
-    console.log('API Call: POST /api/alerts (mock)', alert);
-    const newAlert: CaregiverAlert = {
+  createAlert: async (alert: Omit<CaregiverAlert, 'id' | 'timestamp' | 'resolved'>): Promise<CaregiverAlert> => {
+    const userId = getCurrentUserId();
+    const newAlert = {
       ...alert,
-      id: Math.random().toString(36).substr(2, 9),
-      timestamp: new Date().toISOString()
+      resolved: false,
+      timestamp: serverTimestamp(),
     };
-    return new Promise(resolve => 
-      setTimeout(() => resolve(newAlert), 500)
-    );
-  }
+    const docRef = await addDoc(collection(db, 'users', userId, 'alerts'), newAlert);
+    return { ...newAlert, id: docRef.id, timestamp: new Date().toISOString() };
+  },
 };
 
 export const chatAPI = {
-  // POST /api/chat
   sendMessage: async (message: string): Promise<string> => {
+    // This would ideally call a backend service (e.g., Cloud Function) with the message
+    // and get an AI-generated response. For now, we'll keep the mock response.
     console.log('API Call: POST /api/chat (mock)', { message });
     
-    // Enhanced AI responses based on message content
     let response = "I understand how you're feeling. Would you like to talk about it?";
     
     const lowerMessage = message.toLowerCase();
@@ -173,24 +139,23 @@ export const chatAPI = {
       response = "Sleep is crucial for your wellbeing. I can see from your health data that your sleep patterns have been good lately. Are you having trouble sleeping, or would you like some tips for better rest?";
     }
     
-    return new Promise(resolve => 
-      setTimeout(() => resolve(response), 1000)
-    );
+    return Promise.resolve(response);
   },
 
-  // GET /api/chat/history
   getChatHistory: async (): Promise<ChatMessage[]> => {
-    console.log('API Call: GET /api/chat/history (mock)');
-    return new Promise(resolve => 
-      setTimeout(() => resolve([]), 500)
-    );
+    const userId = getCurrentUserId();
+    const q = query(collection(db, 'users', userId, 'chatHistory'));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ChatMessage));
   },
 
-  // POST /api/chat/save
-  saveChatMessage: async (message: ChatMessage): Promise<ChatMessage> => {
-    console.log('API Call: POST /api/chat/save (mock)', message);
-    return new Promise(resolve => 
-      setTimeout(() => resolve(message), 300)
-    );
-  }
+  saveChatMessage: async (message: Omit<ChatMessage, 'id' | 'timestamp'>): Promise<ChatMessage> => {
+    const userId = getCurrentUserId();
+    const newMessage = {
+      ...message,
+      timestamp: serverTimestamp(),
+    };
+    const docRef = await addDoc(collection(db, 'users', userId, 'chatHistory'), newMessage);
+    return { ...newMessage, id: docRef.id, timestamp: new Date().toISOString() };
+  },
 };

@@ -13,6 +13,12 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
+// Add validation to ensure config is loaded
+if (!firebaseConfig.apiKey) {
+  console.error("Firebase configuration is missing. Please check your environment variables.");
+  console.log("Available env vars:", Object.keys(import.meta.env));
+}
+
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);

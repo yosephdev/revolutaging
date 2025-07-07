@@ -26,11 +26,15 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          {user && (
-            <div className="absolute top-4 right-4">
+          <div className="absolute top-4 right-4">
+            {user ? (
               <Button onClick={() => signOut(auth)}>Sign Out</Button>
-            </div>
-          )}
+            ) : (
+              <Button as="a" href="/login">
+                Login
+              </Button>
+            )}
+          </div>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<LoginPage />} />

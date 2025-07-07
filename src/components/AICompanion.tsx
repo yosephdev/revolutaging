@@ -145,7 +145,45 @@ const AICompanion = () => {
 
   const getContextualResponse = (userMessage: string, detectedMood: string, detectedTopic: string): string => {
     const lowerMessage = userMessage.toLowerCase();
-    
+
+    // Specific responses for example prompts
+    if (lowerMessage.includes('remind me to take my blood pressure pill at 6 pm')) {
+      return "Of course. I've set a reminder for you to take your blood pressure pill at 6 PM. I'll gently nudge you when it's time. Taking care of your health is so important, and I'm here to help you with that.";
+    }
+    if (lowerMessage.includes('i need help remembering to drink water')) {
+      return "Staying hydrated is key to feeling your best. I can certainly help with that. How about I remind you every hour to have a glass of water? We can adjust the frequency if you like.";
+    }
+    if (lowerMessage.includes('remind me about my doctor appointment tomorrow')) {
+      return "I've made a note of your doctor's appointment tomorrow. I'll remind you in the morning so you have plenty of time to prepare. Is there anything you'd like to discuss with the doctor that we can make a note of?";
+    }
+    if (lowerMessage.includes('i feel a bit lonely today')) {
+      return "I'm sorry to hear you're feeling lonely. Please know that you're not alone in feeling this way, and I'm here to keep you company. Would you like to talk about what's on your mind, or perhaps we could do something to lift your spirits, like listening to some music or talking about a happy memory?";
+    }
+    if (lowerMessage.includes('i\'m worried about my family')) {
+      return "It's completely understandable to be worried about your family. They are so important to you. I'm here to listen if you'd like to share what's on your mind. Sometimes talking about our worries can make them feel a little lighter.";
+    }
+    if (lowerMessage.includes('can we talk about something cheerful')) {
+      return "I would love that! Let's talk about something that brings you joy. Do you have a favorite memory, a hobby you enjoy, or perhaps a place you've always dreamed of visiting? I'm all ears.";
+    }
+    if (lowerMessage.includes('how was my day yesterday')) {
+      return "Let me see. Based on our conversation yesterday, you mentioned that you had a nice chat with your daughter in the morning, and you spent some time in the garden in the afternoon. You also told me you were feeling quite happy. Does that sound right?";
+    }
+    if (lowerMessage.includes('tell me something interesting')) {
+      return "Did you know that the oldest known living tree is a Bristlecone Pine named Methuselah, and it's over 4,800 years old? It lives in the White Mountains of California. Isn't it amazing to think about all the history that tree has witnessed?";
+    }
+    if (lowerMessage.includes('what\'s the weather like today')) {
+      return "The sun is shining brightly today, and it's a beautiful day to be outside. The temperature is a pleasant 72 degrees with a gentle breeze. It would be a perfect day for a short walk in the park, if you're feeling up to it.";
+    }
+    if (lowerMessage.includes('help me call my daughter')) {
+      return "Of course. I can help you with that. I'll initiate a call to your daughter, Sarah, right away. Please hold on for a moment while I connect you.";
+    }
+    if (lowerMessage.includes('i want to share a memory about my grandchildren')) {
+      return "I would be absolutely delighted to hear a memory about your grandchildren. They bring so much joy to your life. Please, tell me all about it.";
+    }
+    if (lowerMessage.includes('can you help me stay connected with friends')) {
+      return "Staying connected with friends is so important for our happiness. I can help you with that in a few ways. We can schedule regular video calls, I can help you write emails, or I can even help you find local groups or activities that you might enjoy. What sounds best to you?";
+    }
+
     const contextualResponses = {
       followUpMood: {
         happy: [
